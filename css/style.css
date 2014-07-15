@@ -1,0 +1,192 @@
+*{
+	margin:0;
+	padding:0;
+}
+@import url(http://fonts.googleapis.com/css?family=Open+Sans+Condensed:300);
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
+body{
+	background:#1D1D1D;
+}
+#container{
+	width:800px;
+	height:600px;
+
+	position: absolute;
+	left:50%;
+	top:50%;
+	margin-left:-400px;
+	margin-top:-300px;
+
+	background: #FFF;
+	border:1px solid block;
+	box-shadow:1px 1px 1px 1px #000;
+
+	overflow: hidden;
+}
+#header{
+	width:100%;
+	height:50px;
+	line-height: 50px;
+	text-align: center;
+	background: black;
+	color:#FFF;
+	font-size:35px;
+	font-family:'Open Sans', sans-serif;
+	overflow: hidden;
+}
+
+.window{
+	position: absolute;
+	width:100%;
+	left:100%;
+
+	transition:all 1s ease;
+}
+.active{
+	left:0;
+}
+.inactive{
+	left:-100%;
+}
+#navbar{
+	height:50px;
+	border-bottom:1px solid #000;
+	position: relative;
+}
+#title{
+	width: 540px;
+	display: inline-block;
+	line-height: 50px;
+	text-align: center;
+
+	font-family:'Open Sans', sans-serif;
+	font-size: 25px;
+}
+.backbtn{
+	font-size:30px;
+	position: absolute;
+	left:10px;
+	top:0;
+	cursor: pointer;
+}
+.backbtn:hover{
+	color:#CCC;
+}
+.backbtn:active i{
+	position: relative;
+	top:1px;
+}
+#searchbox {
+	float: right;
+    display: inline-block;
+    width:220px;
+ 	padding:5px;
+}
+#searchbox input {
+    float: right;
+    border-radius: .2em;
+}
+#searchbox input[type=search] {
+    background-color: #FFF;
+    border: 1px solid #d8d8d8;
+    padding: 10px;
+    border-radius: 4px;
+    width: 100px;
+    outline: none;
+    margin-right: 7px;
+    transition: all .2s;
+}
+input[type=text] {
+    background-color: #FFF;
+    border: 1px solid #D1D1D1;
+    padding: 10px;
+    border-radius: 4px;
+    width: 200px;
+    outline: none;
+    margin-right: 7px;
+    transition: all .2s;
+}
+#searchbox input[type=search]:focus {
+    width: 150px;
+}
+#searchbox input[type=button] {
+    background-color: #ce5043;
+    color: #fff;
+    cursor: pointer;
+    padding: 10px;
+    width: 37px;
+    border: 1px solid #a44035;
+    outline: none;
+    background-image: url(http://www.pixentral.com/pics/1f8HUdms8O7drEfTM5xB0Z6v49cBO0.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 14px;
+    border-radius:100%;
+}
+#searchbox input[type=button]:hover {
+    background: #a44035;
+  	background-image: url(http://www.pixentral.com/pics/1f8HUdms8O7drEfTM5xB0Z6v49cBO0.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: 14px;
+}
+::-webkit-input-placeholder {
+    font-family:'Open Sans', sans-serif;
+    color: #ccc;
+}
+h1 {
+    color: #666;
+    font-weight: 300;
+    font-family:'Open Sans Condensed', sans-serif;
+}
+#listbox{
+	height:500px;
+	overflow-y:auto;
+}
+#listbox ul{
+}
+#listbox li{
+	display: inline-block;
+	width:100px;
+	height:100px;
+	background: black;
+	cursor:pointer;
+	margin:5px 0 5px 5px;
+	position: relative;
+
+	border:1px solid rgba(255,255,255,0.6);
+}
+#listbox li .hoverbox{
+	position: absolute;
+	width:90px;
+	height:90px;
+	padding: 5px;
+	left:0;
+	top:0;
+	background: black;
+	color:#FFF;
+	visibility: hidden;
+	opacity: 0;
+	display:table;overflow: hidden;
+
+	-webkit-transition:opacity .5s;
+	transition:opacity .5s;
+
+	font-family:"Open Sans",sans-serif;
+	font-size:11px;
+}
+#listbox .hoverbox p{
+	display: table-cell;
+	vertical-align: middle;
+	text-align: center;
+	margin-left:100px;
+}
+#listbox li:hover .hoverbox{
+	visibility: visible;
+	opacity: 0.8;
+}
+
+#step1{
+	height:550px;
+}
