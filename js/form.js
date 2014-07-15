@@ -4,14 +4,14 @@ $(document).ready(function() {
 	    color: "#000",
 	    change: function(color) {
 	        props.stroke=color.toHexString();
-	        refreshCanvas();
+	        updateCanvas();
 	    }
 	});
 	$("#fillcolor").spectrum({
 	    color: "#FFF",
 	    change: function(color) {
 	        props.fill=color.toHexString();
-	        refreshCanvas();
+	        updateCanvas();
 	    }
 	});
 
@@ -21,7 +21,7 @@ $(document).ready(function() {
 	        'initial':'Impact,Charcoal,sans-serif',
 	        'selected' : function(style) {
 	        	props.font=style;
-	        	refreshCanvas(); 
+	        	updateCanvas(); 
 	        },
 	        'fonts' : [
 	        	'Impact,Charcoal,sans-serif',
@@ -44,18 +44,18 @@ $(document).ready(function() {
 		var prop=$(this).attr('name');
 		var val=$(this).find(":selected").text();
 		props[prop]=val;
-		refreshCanvas();
+		updateCanvas();
 	});
 
 	$("#inputform input[name='first']").bind("input",function(){
 		props.lines[0]=$(this).val();
 		console.log(props.lines);
-		refreshCanvas();
+		updateCanvas();
 	});
 	$("#inputform input[name='second']").bind("input",function(){
 		props.lines[1]=$(this).val();
 		console.log(props.lines);
-		refreshCanvas();
+		updateCanvas();
 	});
 	$("#export").click(function() {
 		var dataURL=canvas.toDataURL();

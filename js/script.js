@@ -1,4 +1,4 @@
-props={'fill':"#FFFFFF",'stroke':"#222222",'font':"Impact",'fontsize':"80","strokesize":"3",'lines':["АЛО БРЕ БИЛИ ГЕЈТ","СЕРЕМ ТИ СЕ НА КОМПЉУТОР"]};
+props={'fill':"#FFFFFF",'stroke':"#222222",'font':"Impact",'fontsize':80,"strokesize":12,'lines':["ПРВА ЛИНИЈА","ДРУГА ЛИНИЈА"]};
 images=[
     {
         "name": "Bora Drljaca",
@@ -207,12 +207,12 @@ function setCanvas(img){
         canvas.style.top=(550-canvas.offsetHeight)/2+'px';
         context.drawImage(this,0,0);
 
-        refreshCanvas();
+        updateCanvas();
     });
 }
 
 
-function refreshCanvas(){
+function updateCanvas(){
     if (typeof context == 'undefined'){ //BREAK THE FUNCTION IF IT IS CALLED PRIOR TO SETTING
         return -1;
     }
@@ -220,45 +220,31 @@ function refreshCanvas(){
     context.drawImage(image,0,0);
     var x = canvas.width / 2;
     
-    addText(props.lines[0],x,parseInt(props.fontsize),parseInt(props.fontsize),false);
-    addText(props.lines[1],x,canvas.height,parseInt(props.fontsize),true);
+    addText(props.lines[0], x, parseInt(props.fontsize), parseInt(props.fontsize), 'top');
+    addText(props.lines[1], x, canvas.height, parseInt(props.fontsize), 'bottom');
 }
 
-function addText(text, x, y, lineHeight,bottom) {
+function addText(text,x,y,lineHeight,startingPoint){
     context.textAlign = 'center';
     context.font = "bold "+props.fontsize+"px "+props.font;
-    
-    var words = text.split(' ');
-    var line = '';
 
-    if(!bottom){
-        for(var n = 0; n < words.length; n++) {
-            var testLine = line + words[n] + ' ';
-            var metrics = context.measureText(testLine);
-            var testWidth = metrics.width;
-            if (testWidth > canvas.width && n > 0) {
-                context.fillStyle = props.fill;
-                context.fillText(line, x, y);
-                context.strokeStyle = props.stroke;
-                context.lineWidth = props.strokesize;
-                if(parseInt(props.strokesize)!==0){
-                   context.strokeText(line, x, y); 
-                }
-                line = words[n] + ' ';
-                y += lineHeight;
-            }
-            else {
-                line = testLine;
-            }
-        }
-        context.fillStyle = props.fill;
-        context.fillText(line, x, y);
+    function printText(line,x,y){
+        context.miterLimit = 2;
+
+        context.lineJoin = 'round';
+
         context.strokeStyle = props.stroke;
         context.lineWidth = props.strokesize;
         if(parseInt(props.strokesize)!==0){
            context.strokeText(line, x, y); 
         }
-    }else{
+
+        context.fillStyle = props.fill;
+        context.fillText(line, x, y);
+    }
+    function getMeasure(){
+        var words = text.split(' ');
+        var line = '';
         var counter=0;
         for(var n = 0; n < words.length; n++) {
             var testLine = line + words[n] + ' ';
@@ -273,35 +259,29 @@ function addText(text, x, y, lineHeight,bottom) {
             }
         };
 
-        words = text.split(' ');
-        line = '';
+        return counter*(parseInt(props.fontsize));
+    }
 
-        y-=counter*(parseInt(props.fontsize))+(parseInt(props.fontsize)/4);
-        for(var n = 0; n < words.length; n++) {
-            var testLine = line + words[n] + ' ';
-            var metrics = context.measureText(testLine);
-            var testWidth = metrics.width;
-            if (testWidth > canvas.width && n > 0) {
-                context.fillStyle = props.fill;
-                context.fillText(line, x, y);
-                context.strokeStyle = props.stroke;
-                context.lineWidth = props.strokesize;
-                if(parseInt(props.strokesize)!==0){
-                       context.strokeText(line, x, y); 
-                    }
-                line = words[n] + ' ';
-                y += lineHeight;
-            }
-            else {
-                line = testLine;
-            }
+    if(startingPoint=='bottom'){  //We must calculate how much space will the text fill in order to place it
+       y-=getMeasure()+(parseInt(props.fontsize)/4); 
+    }
+
+    var words = text.split(' ');
+    var line = '';
+
+    for(var n = 0; n < words.length; n++) {
+        var testLine = line + words[n] + ' ';
+        var metrics = context.measureText(testLine);
+        var testWidth = metrics.width;
+        if (testWidth > canvas.width && n > 0) {
+            printText(line,x,y);
+            line = words[n] + ' ';
+            y += lineHeight;
         }
-        context.fillStyle = props.fill;
-        context.fillText(line, x, y);
-        context.strokeStyle = props.stroke;
-        context.lineWidth = props.strokesize;
-        if(parseInt(props.strokesize)!==0){
-           context.strokeText(line, x, y); 
+        else {
+            line = testLine;
         }
     }
+    printText(line,x,y); 
+
 }
