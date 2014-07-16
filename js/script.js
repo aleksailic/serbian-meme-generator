@@ -133,7 +133,7 @@ window.addEventListener("load",function(){
         }
 	});
 
-    //CHANGE WINDOW FROM PICKER TO STEP 1
+    //CHANGE WINDOW FROM PICKER TO STEP 2
     $("#listbox li").click(function(){
         changeWindow();
         var picked=new Image();
@@ -198,13 +198,13 @@ function setCanvas(img){
 
     //CENTER FORM
     var form = document.getElementById("inputform");
-    form.style.marginTop=(550-form.offsetHeight)/2+'px';
+    form.style.marginTop=(500-form.offsetHeight)/2+'px';
     
     img.addEventListener("load",function(){
         canvas.setAttribute("width",this.width);
         canvas.setAttribute("height",this.height);
 
-        canvas.style.top=(550-canvas.offsetHeight)/2+'px';
+        canvas.style.top=(500-canvas.offsetHeight)/2+'px';
         context.drawImage(this,0,0);
 
         updateCanvas();
