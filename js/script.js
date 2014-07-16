@@ -1,4 +1,20 @@
-props={'fill': "#FFFFFF",'stroke': "#222222",'font': "Impact",'fontsize': 80,"strokesize": 12,'lines': ["ПРВА ЛИНИЈА", "ДРУГА ЛИНИЈА"]};
+/*
+    Copyright ©2014 Aleksa Ilic. All Rights Reserved.
+    Includes content from: jQuery,Spectrum.js,fontselector.js
+*/
+props={
+    'fill': "#FFFFFF",
+    'stroke': "#222222",
+    'font':{
+        'family':"Impact",
+        'sizes':[80,80]
+    },
+    'stroke':{
+        'color':"#222222",
+        'sizes':[12,12]
+    },
+    'lines': ["ПРВА ЛИНИЈА", "ДРУГА ЛИНИЈА"]
+};
 images=[
     {
         "name": "Bora Drljaca",
@@ -109,7 +125,6 @@ window.addEventListener("load",function(){
     UI.inputform.initalize();
 },false);
 
-
 UI={
     window:{
         switch:function(next){ //next is boolean and tells the function in which direction to move windows
@@ -190,8 +205,88 @@ UI={
     inputform:{
         initalize:function(){
             //center the form
+            this.center();
+
+            $("#strokecolor").spectrum({
+                color: "#000",
+                change: function(color) {
+                    props.stroke.color=color.toHexString();
+                    canvas.update();
+                }
+            });
+            $("#fillcolor").spectrum({
+                color: "#FFF",
+                change: function(color) {
+                    props.fill=color.toHexString();
+                    canvas.update();
+                }
+            });
+
+            //INITIALIZE FONT PICKER
+            $('#fontSelect').fontSelector({
+                'hide_fallbacks' : true,
+                'initial':'Impact,Charcoal,sans-serif',
+                'selected' : function(style) {
+                    props.font.family=style;
+                    if (canvas !== null){
+                        canvas.update();
+                    }
+                         
+                },
+                    'fonts' : [
+                        'Impact,Charcoal,sans-serif',
+                        'Arial,Arial,Helvetica,sans-serif',
+                        'Arial Black,Arial Black,Gadget,sans-serif',
+                        'Comic Sans MS,Comic Sans MS,cursive',
+                        'Courier New,Courier New,Courier,monospace',
+                        'Georgia,Georgia,serif',
+                        'Lucida Console,Monaco,monospace',
+                        'Lucida Sans Unicode,Lucida Grande,sans-serif',
+                        'Palatino Linotype,Book Antiqua,Palatino,serif',
+                        'Tahoma,Geneva,sans-serif',
+                        'Times New Roman,Times,serif',
+                        'Trebuchet MS,Helvetica,sans-serif',
+                        'Verdana,Geneva,sans-serif'
+                    ]
+            });
+
+            $("#inputform select").change(function(event) {
+                /*var prop=$(this).attr('name');
+                var val=$(this).find(":selected").text();
+                props[prop]=val;
+                canvas.update();*/
+            });
+            $("#inputform select").change(function(event) {
+                var prop=$(this).attr('name');
+                var number = parseInt(prop.slice(-1));
+                prop=prop.slice(0,-1);
+
+                var val=$(this).find(":selected").val();
+                props[prop].sizes[number]=val;
+
+                console.log(props.stroke.sizes);
+                canvas.update();
+            });
+
+            $("#inputform input[name='first']").bind("input",function(){
+                props.lines[0]=$(this).val();
+                console.log(props.lines);
+                canvas.update();
+            });
+            $("#inputform input[name='second']").bind("input",function(){
+                props.lines[1]=$(this).val();
+                console.log(props.lines);
+                canvas.update();
+            });
+            $("#export").click(function() {
+                var dataURL=canvas.save();
+                document.getElementById('canvasimg').src = dataURL;
+                UI.window.switch();
+            });
+        },
+        center:function(){
             var form = document.getElementById("inputform");
-            form.style.marginTop=(500-form.offsetHeight)/2+'px';
+            form.style.marginTop=(550-form.offsetHeight)/2+'px';
         }
     }
 };
@@ -228,31 +323,36 @@ function canvasObject(image){
 
         var x = canvas.width / 2;
         
-        addText(props.lines[0], x, parseInt(props.fontsize), parseInt(props.fontsize), 'top');
-        addText(props.lines[1], x, canvas.height, parseInt(props.fontsize), 'bottom');
+        addText(props.lines[0], x, parseInt(props.font.sizes[0]), parseInt(props.font.sizes[0]), 'top');
+        addText(props.lines[1], x, canvas.height, parseInt(props.font.sizes[1]), 'bottom');
 
         function addBackground(){
             context.drawImage(image,0,0);
         }
         function addText(text,x,y,lineHeight,startingPoint){
             context.textAlign = 'center';
-            context.font = "bold "+props.fontsize+"px "+props.font;
 
+            if(startingPoint=='bottom'){
+                context.font = "bold "+props.font.sizes[1]+"px "+props.font.family;
+                context.lineWidth = parseInt(props.stroke.sizes[1]);
+            }else{
+               context.font = "bold "+props.font.sizes[0]+"px "+props.font.family; 
+               context.lineWidth = parseInt(props.stroke.sizes[0]);
+            }
+            
             function printText(line,x,y){
                 context.miterLimit = 2;
 
                 context.lineJoin = 'round';
-
-                context.strokeStyle = props.stroke;
-                context.lineWidth = props.strokesize;
-                if(parseInt(props.strokesize)!==0){
+                context.strokeStyle = props.stroke.color;
+                if(parseInt(context.lineWidth)!==1){ //Weird quirk, lineWidth cannot be set to 0 so we will treat 1 as 0.
                    context.strokeText(line, x, y); 
                 }
 
                 context.fillStyle = props.fill;
                 context.fillText(line, x, y);
             }
-            function getMeasure(){
+            function getMeasure(startingPoint){
                 var words = text.split(' ');
                 var line = '';
                 var counter=0;
@@ -269,11 +369,16 @@ function canvasObject(image){
                     }
                 };
 
-                return counter*(parseInt(props.fontsize));
+                if(startingPoint=='bottom'){
+                    return counter*(parseInt(props.font.sizes[1]));
+                }else{
+                    return counter*(parseInt(props.font.sizes[0]));
+                }
+                
             }
 
             if(startingPoint=='bottom'){  //We must calculate how much space will the text fill in order to place it
-               y-=getMeasure()+(parseInt(props.fontsize)/4); 
+               y-=getMeasure('bottom')+(parseInt(props.font.sizes[1])/4); 
             }
 
             var words = text.split(' ');
@@ -305,5 +410,9 @@ function canvasObject(image){
         position:function(){
             canvas.style.top=(500-canvas.offsetHeight)/2+'px';
         }
+    };
+
+    this.save=function(){
+        return canvas.toDataURL();
     };
 }

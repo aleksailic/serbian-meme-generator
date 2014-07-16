@@ -61,9 +61,8 @@ $(document).ready(function() {
 		canvas.update();
 	});
 	$("#export").click(function() {
-		var dataURL=canvas.toDataURL();
+		var dataURL=canvas.save();
 		document.getElementById('canvasimg').src = dataURL;
-		changeWindow();
-		console.log(dataURL);
+		UI.window.switch();
 	});
 });
