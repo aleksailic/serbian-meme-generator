@@ -1,4 +1,4 @@
-props={'fill':"#FFFFFF",'stroke':"#222222",'font':"Impact",'fontsize':80,"strokesize":12,'lines':["ПРВА ЛИНИЈА","ДРУГА ЛИНИЈА"]};
+props={'fill': "#FFFFFF",'stroke': "#222222",'font': "Impact",'fontsize': 80,"strokesize": 12,'lines': ["ПРВА ЛИНИЈА", "ДРУГА ЛИНИЈА"]};
 images=[
     {
         "name": "Bora Drljaca",
@@ -102,6 +102,7 @@ images=[
     }
 	
 ];
+canvas=null;
 
 window.addEventListener("load",function(){
 	var id=document.getElementById( 'listbox' ).getElementsByTagName( 'ul' )[0];
@@ -138,8 +139,13 @@ window.addEventListener("load",function(){
         changeWindow();
         var picked=new Image();
         picked.src=$(this).attr("data-large");
-        setCanvas(picked);
+        
+        canvas=new canvasObject(picked);
     });
+
+    //CENTER FORM
+    var form = document.getElementById("inputform");
+    form.style.marginTop=(500-form.offsetHeight)/2+'px';
 },false);
 
 
@@ -180,108 +186,122 @@ function getHTML(id){
 	return HTML;
 }
 
-function setCanvas(img){
-    canvas = document.getElementById('canvas');
-    context=canvas.getContext('2d');
-    image=img;
+UI={
+    window:{
+        switch:function(order){
 
-    context.clearRect(0,0,canvas.width,canvas.height);
-
-    //LOADING
-    context.textAlign="center";
-    context.fillStyle = "#FFFFFF";
-    context.font = "bold 40px Impact";
-    context.fillText("LOADING...", canvas.width/2, 100);
-    context.fillStyle = "#000000";
-    context.lineWidth = 2;
-    context.strokeText("LOADING...", canvas.width/2, 100);
-
-    //CENTER FORM
-    var form = document.getElementById("inputform");
-    form.style.marginTop=(500-form.offsetHeight)/2+'px';
-    
-    img.addEventListener("load",function(){
-        canvas.setAttribute("width",this.width);
-        canvas.setAttribute("height",this.height);
-
-        canvas.style.top=(500-canvas.offsetHeight)/2+'px';
-        context.drawImage(this,0,0);
-
-        updateCanvas();
-    });
-}
-
-
-function updateCanvas(){
-    if (typeof context == 'undefined'){ //BREAK THE FUNCTION IF IT IS CALLED PRIOR TO SETTING
-        return -1;
-    }
-
-    context.drawImage(image,0,0);
-    var x = canvas.width / 2;
-    
-    addText(props.lines[0], x, parseInt(props.fontsize), parseInt(props.fontsize), 'top');
-    addText(props.lines[1], x, canvas.height, parseInt(props.fontsize), 'bottom');
-}
-
-function addText(text,x,y,lineHeight,startingPoint){
-    context.textAlign = 'center';
-    context.font = "bold "+props.fontsize+"px "+props.font;
-
-    function printText(line,x,y){
-        context.miterLimit = 2;
-
-        context.lineJoin = 'round';
-
-        context.strokeStyle = props.stroke;
-        context.lineWidth = props.strokesize;
-        if(parseInt(props.strokesize)!==0){
-           context.strokeText(line, x, y); 
         }
-
-        context.fillStyle = props.fill;
-        context.fillText(line, x, y);
     }
-    function getMeasure(){
-        var words = text.split(' ');
-        var line = '';
-        var counter=0;
-        for(var n = 0; n < words.length; n++) {
-            var testLine = line + words[n] + ' ';
-            var metrics = context.measureText(testLine);
-            var testWidth = metrics.width;
-            if (testWidth > canvas.width && n > 0) {
-                line = words[n] + ' ';
-                counter++
+};
+
+function canvasObject(image){
+    var canvas=document.getElementById('canvas');
+    var context=canvas.getContext('2d');
+    var obj=this;
+
+    image.addEventListener("load",function(){
+        obj.set.resolution(image.width,image.height);
+        obj.set.position();
+
+        obj.update();
+    },false); //once image is loaded initalize canvas
+
+    this.clear=function(){
+        context.clearRect(0,0,this.canvas.width,this.cavnas.height);
+    };
+
+    this.loadingScreen=function(){
+        context.textAlign="center";
+        context.fillStyle = "#FFFFFF";
+        context.font = "bold 40px Impact";
+        context.fillText("LOADING...", canvas.width/2, 100);
+        context.fillStyle = "#000000";
+        context.lineWidth = 2;
+        context.strokeText("LOADING...", canvas.width/2, 100);
+    };
+    this.loadingScreen(); //display loading screen while the image is loading
+
+    this.update=function(){
+        addBackground();
+
+        var x = canvas.width / 2;
+        
+        addText(props.lines[0], x, parseInt(props.fontsize), parseInt(props.fontsize), 'top');
+        addText(props.lines[1], x, canvas.height, parseInt(props.fontsize), 'bottom');
+
+        function addBackground(){
+            context.drawImage(image,0,0);
+        }
+        function addText(text,x,y,lineHeight,startingPoint){
+            context.textAlign = 'center';
+            context.font = "bold "+props.fontsize+"px "+props.font;
+
+            function printText(line,x,y){
+                context.miterLimit = 2;
+
+                context.lineJoin = 'round';
+
+                context.strokeStyle = props.stroke;
+                context.lineWidth = props.strokesize;
+                if(parseInt(props.strokesize)!==0){
+                   context.strokeText(line, x, y); 
+                }
+
+                context.fillStyle = props.fill;
+                context.fillText(line, x, y);
             }
-            else {
-                line = testLine;
+            function getMeasure(){
+                var words = text.split(' ');
+                var line = '';
+                var counter=0;
+                for(var n = 0; n < words.length; n++) {
+                    var testLine = line + words[n] + ' ';
+                    var metrics = context.measureText(testLine);
+                    var testWidth = metrics.width;
+                    if (testWidth > canvas.width && n > 0) {
+                        line = words[n] + ' ';
+                        counter++
+                    }
+                    else {
+                        line = testLine;
+                    }
+                };
+
+                return counter*(parseInt(props.fontsize));
             }
-        };
 
-        return counter*(parseInt(props.fontsize));
-    }
+            if(startingPoint=='bottom'){  //We must calculate how much space will the text fill in order to place it
+               y-=getMeasure()+(parseInt(props.fontsize)/4); 
+            }
 
-    if(startingPoint=='bottom'){  //We must calculate how much space will the text fill in order to place it
-       y-=getMeasure()+(parseInt(props.fontsize)/4); 
-    }
+            var words = text.split(' ');
+            var line = '';
 
-    var words = text.split(' ');
-    var line = '';
+            for(var n = 0; n < words.length; n++) {
+                var testLine = line + words[n] + ' ';
+                var metrics = context.measureText(testLine);
+                var testWidth = metrics.width;
+                if (testWidth > canvas.width && n > 0) {
+                    printText(line,x,y);
+                    line = words[n] + ' ';
+                    y += lineHeight;
+                }
+                else {
+                    line = testLine;
+                }
+            }
+            printText(line,x,y); 
 
-    for(var n = 0; n < words.length; n++) {
-        var testLine = line + words[n] + ' ';
-        var metrics = context.measureText(testLine);
-        var testWidth = metrics.width;
-        if (testWidth > canvas.width && n > 0) {
-            printText(line,x,y);
-            line = words[n] + ' ';
-            y += lineHeight;
         }
-        else {
-            line = testLine;
-        }
-    }
-    printText(line,x,y); 
+    };
 
+    this.set={
+        resolution:function(w,h){
+            canvas.setAttribute("width",w);
+            canvas.setAttribute("height",h);
+        },
+        position:function(){
+            canvas.style.top=(500-canvas.offsetHeight)/2+'px';
+        }
+    };
 }

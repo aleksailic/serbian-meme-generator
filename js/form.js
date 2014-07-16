@@ -4,14 +4,14 @@ $(document).ready(function() {
 	    color: "#000",
 	    change: function(color) {
 	        props.stroke=color.toHexString();
-	        updateCanvas();
+	        canvas.update();
 	    }
 	});
 	$("#fillcolor").spectrum({
 	    color: "#FFF",
 	    change: function(color) {
 	        props.fill=color.toHexString();
-	        updateCanvas();
+	        canvas.update();
 	    }
 	});
 
@@ -21,7 +21,10 @@ $(document).ready(function() {
 	        'initial':'Impact,Charcoal,sans-serif',
 	        'selected' : function(style) {
 	        	props.font=style;
-	        	updateCanvas(); 
+	        	if (canvas !== null){
+	        		canvas.update();
+	        	}
+	        	 
 	        },
 	        'fonts' : [
 	        	'Impact,Charcoal,sans-serif',
@@ -44,18 +47,18 @@ $(document).ready(function() {
 		var prop=$(this).attr('name');
 		var val=$(this).find(":selected").text();
 		props[prop]=val;
-		updateCanvas();
+		canvas.update();
 	});
 
 	$("#inputform input[name='first']").bind("input",function(){
 		props.lines[0]=$(this).val();
 		console.log(props.lines);
-		updateCanvas();
+		canvas.update();
 	});
 	$("#inputform input[name='second']").bind("input",function(){
 		props.lines[1]=$(this).val();
 		console.log(props.lines);
-		updateCanvas();
+		canvas.update();
 	});
 	$("#export").click(function() {
 		var dataURL=canvas.toDataURL();
