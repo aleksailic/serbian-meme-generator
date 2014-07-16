@@ -105,91 +105,93 @@ images=[
 canvas=null;
 
 window.addEventListener("load",function(){
-	var id=document.getElementById( 'listbox' ).getElementsByTagName( 'ul' )[0];
-	var HTML=""
-	for(var i=0;i<images.length;i++){
-		HTML+=getHTML(i);
-	}
-	id.innerHTML=HTML;
-
-	$("#search_field").bind("input",function(){
-		var text=document.getElementById("search_field").value.toLowerCase();
-
-        //get all ids that search query returns
-		var ids=new Array();
-		for(var i=0;i<images.length;i++){
-			for (var z in images[i].tags){
-                if(images[i].tags[z].indexOf(text)!=-1){
-                    ids.push(i);
-                    break;
-                }
-            }
-		}
-        for (var i=0;i<images.length;i++){
-            if(jQuery.inArray( i, ids )!=-1){
-                $("#listbox ul").children().eq(i).fadeIn();
-            }else{
-                $("#listbox ul").children().eq(i).fadeOut();
-            }
-        }
-	});
-
-    //CHANGE WINDOW FROM PICKER TO STEP 2
-    $("#listbox li").click(function(){
-        changeWindow();
-        var picked=new Image();
-        picked.src=$(this).attr("data-large");
-        
-        canvas=new canvasObject(picked);
-    });
-
-    //CENTER FORM
-    var form = document.getElementById("inputform");
-    form.style.marginTop=(500-form.offsetHeight)/2+'px';
+	UI.listbox.initalize();    
+    UI.inputform.initalize();
 },false);
 
 
-function changeWindow(order){
-    if(typeof(order)==='undefined'){
-        $(".active").removeClass("active").addClass("inactive").next().addClass('active');
-    }else{
-        $(".active").removeClass("active").prev().removeClass("inactive").addClass('active');
-    }
-    var t = $(".active").data('text');
-    var b = $('.active').data('back');
-    changeHeaderText(t,b);
-}
-function changeHeaderText(text,back){
-    $('.backbtn').unbind('click');
-    $( "#header" ).animate({
-        'line-height':"200px"
-    }, 1000, function() {
-        if(back)text='<div class="backbtn"><i class="fa fa-arrow-circle-left"></i></div>'+text;
-        $(this).html(text);
-        $(this).animate({
-            'line-height':"50px"
-        });
-        $('.backbtn').bind("click",function(){
-            changeWindow(false);
-        });
-    });
-}
-
-function getHTML(id){
-	var HTML="";
-	HTML+='<li data-large="img/large/'+images[id].src+'">';
-	HTML+='<img width="100" height="100" src="img/thumb/'+images[id].src+'" alt="'+images[id].name+'">';
-	HTML+='<div class="hoverbox">';
-	HTML+='<p class="text">'+images[id].name+'</p>';
-	HTML+='</div>';
-	HTML+='</li>';
-	return HTML;
-}
-
 UI={
     window:{
-        switch:function(order){
+        switch:function(next){ //next is boolean and tells the function in which direction to move windows
+            if(typeof(next)==='undefined' || next==true){
+                $(".active").removeClass("active").addClass("inactive").next().addClass('active');
+            }else{
+                $(".active").removeClass("active").prev().removeClass("inactive").addClass('active');
+            }
+            var t = $(".active").data('text');
+            var b = $('.active').data('back');
 
+            this.headerText(t,b);
+        },
+        headerText:function(text,back){
+            $('.backbtn').unbind('click');
+            $( "#header" ).animate({
+                'line-height':"200px"
+            }, 1000, function() {
+                if(back)text='<div class="backbtn"><i class="fa fa-arrow-circle-left"></i></div>'+text;
+                $(this).html(text);
+                $(this).animate({
+                    'line-height':"50px"
+                });
+                $('.backbtn').bind("click",function(){
+                    UI.window.switch(false);
+                });
+            });
+        }
+    },
+    listbox:{
+        initalize:function(){
+            this.populate();
+            $("#search_field").bind("input",this.search);
+            $("#listbox li").click(function(){ //WHEN ITEM IS SELECTED MOVE ON TO STEP 2
+                UI.window.switch();
+                
+                var picked=new Image();
+                picked.src=$(this).attr("data-large");   
+                canvas=new canvasObject(picked);
+            });
+        },
+        populate:function(){
+            var id=document.getElementById( 'listbox' ).getElementsByTagName( 'ul' )[0];
+            var HTML=""
+            for(var i=0;i<images.length;i++){
+                HTML+='<li data-large="img/large/'+images[i].src+'">';
+                HTML+='<img width="100" height="100" src="img/thumb/'+images[i].src+'" alt="'+images[i].name+'">';
+                HTML+='<div class="hoverbox">';
+                HTML+='<p class="text">'+images[i].name+'</p>';
+                HTML+='</div>';
+                HTML+='</li>';
+            }
+            id.innerHTML=HTML;
+        },
+        search:function(){
+            var text=document.getElementById("search_field").value.toLowerCase();
+
+            //get all ids that search query returns
+            var ids=new Array();
+            for(var i=0;i<images.length;i++){
+                for (var z in images[i].tags){
+                    if(images[i].tags[z].indexOf(text)!=-1){
+                        ids.push(i);
+                        break;
+                    }
+                }
+            }
+            //fadeout ones that don't match
+            for (var i=0;i<images.length;i++){
+                if(jQuery.inArray( i, ids )!=-1){
+                    $("#listbox ul").children().eq(i).fadeIn();
+                }else{
+                    $("#listbox ul").children().eq(i).fadeOut();
+                }
+            }
+        }
+    },
+    inputform:{
+        initalize:function(){
+            //center the form
+            var form = document.getElementById("inputform");
+            form.style.marginTop=(500-form.offsetHeight)/2+'px';
         }
     }
 };
