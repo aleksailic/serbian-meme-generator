@@ -22,7 +22,7 @@ images=[
         "src": "img17.jpg"
     },
     {
-        "name": "Ceda Zmaj",
+        "name": "Čeda Zmaj",
         "tags": ["politicar", "ldp", "ceda", "zmaj", "cedomir", "jovanovic"],
         "src": "img2.jpg"
     },
@@ -32,62 +32,62 @@ images=[
 		"src": "img1.jpg"
     },
 	{
-        "name": "Aleksandar Vucic",
+        "name": "Aleksandar Vučić",
         "tags": ["politicar", "spasilac", "premijer", "sns", "aleksandar", "vucic"],
 		"src": "img3.jpg"
     },
 	{
-        "name": "Kristijan Golubovic",
+        "name": "Kristijan Golubović",
         "tags": ["kriminalac", "umetnik", "estrada", "kristijan", "kiki", "golubovic"],
 		"src": "img4.jpg"
     },
 	{
-        "name": "Aleksandar Vucic osmeh",
+        "name": "Aleksandar Vučić",
         "tags": ["politicar", "spasilac", "premijer", "sns", "aleksandar", "vucic"],
 		"src": "img5.jpg"
     },
 	{
-        "name": "Velja Ilic Pijanica",
+        "name": "Velja Ilić",
         "tags": ["politicar", "velja", "ilic"],
 		"src": "img6.jpg"
     },
 	{
-        "name": "Toma Nikolic",
+        "name": "Toma Nikolić",
         "tags": ["politicar", "predsednik", "drzava", "sns", "tomislav", "nikolic", "toma"],
 		"src": "img7.jpg"
     },
 	{
-        "name": "Ivica Dacic",
+        "name": "Ivica Dačić",
         "tags": ["politicar", "sps", "bivsi premijer", "dacic", "ivica"],
 		"src": "img8.jpg"
     },
 	{
-        "name": "Era Ojdanic",
+        "name": "Era Ojdanić",
         "tags": ["estrada", "pevac", "umetnik", "era", "ojdanic", "pedofil"],
 		"src": "img9.jpg"
     },
 	{
-        "name": "Ivica Dacic osmeh",
+        "name": "Ivica Dačic osmeh",
         "tags": ["politicar", "sps", "bivsi premijer", "dacic", "ivica"],
 		"src": "img10.jpg"
     },
 	{
-        "name": "Jelena Karleusa naocare",
+        "name": "Jelena Karleuša naočare",
         "tags": ["estrada", "pevac", "pevacica", "umetnik", "karleusa", "jelena"],
 		"src": "img11.jpg"
     },
 	{
-        "name": "Jovan Krkobabic",
+        "name": "Jovan Krkobabić",
         "tags": ["politicar", "pups", "jovan", "krkobabic"],
 		"src": "img12.jpg"
     },
 	{
-        "name": "Natasa Bekvalac",
+        "name": "Nataša Bekvalac",
         "tags": ["umetnik", "estrada", "natasa", "pevacica", "bekvalac"],
 		"src": "img13.jpg"
     },
 	{
-        "name": "Palma Biznismen",
+        "name": "Palma bizmisnem",
         "tags": ["politicar", "js", "dragan", "markovic", "palma", "jagodina"],
 		"src": "img14.jpg"
     },
@@ -102,17 +102,17 @@ images=[
 		"src": "img16.jpg"
     },
 	{
-        "name": "Velja Ilic",
+        "name": "Velja Ilić",
         "tags": ["politicar", "velja", "ilic"],
 		"src": "img18.jpg"
     },
 	{
-        "name": "Aleksandar Vucic pobednik",
+        "name": "Aleksandar Vučić",
         "tags": ["politicar", "spasilac", "premijer", "sns", "aleksandar", "vucic"],
 		"src": "img19.jpg"
     },
 	{
-        "name": "Velja Ilic umisljen",
+        "name": "Velja Ilic zamišljen",
         "tags": ["politicar", "velja", "ilic"],
 		"src": "img20.jpg"
     }
@@ -180,7 +180,16 @@ UI={
             id.innerHTML=HTML;
         },
         search:function(){
+            var rmSpecChar=function (str){
+                str = str.replace(/đ/g,'dj');
+                str = str.replace(/č/g,'c');
+                str = str.replace(/ć/g,'c');
+                str = str.replace(/š/g,'s');
+                str = str.replace(/ž/g,'z');
+                return str;
+            }
             var text=document.getElementById("search_field").value.toLowerCase();
+            text = rmSpecChar(text);
 
             //get all ids that search query returns
             var ids=new Array();
