@@ -108,7 +108,7 @@ body{
     width: 37px;
     border: 1px solid #a44035;
     outline: none;
-    background-image: url(http://www.pixentral.com/pics/1f8HUdms8O7drEfTM5xB0Z6v49cBO0.png);
+    background-image: url(../img/search.png);
     background-position: center;
     background-repeat: no-repeat;
     background-size: 14px;
@@ -116,7 +116,7 @@ body{
 }
 #searchbox input[type=button]:hover {
     background: #a44035;
-  	background-image: url(http://www.pixentral.com/pics/1f8HUdms8O7drEfTM5xB0Z6v49cBO0.png);
+  	background-image: url(../img/search.png);
     background-position: center;
     background-repeat: no-repeat;
     background-size: 14px;
